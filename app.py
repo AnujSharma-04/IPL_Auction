@@ -1,10 +1,16 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv  # Import dotenv to read .env file
+from flask_migrate import Migrate
+
+load_dotenv() # Load the environment variables from .env file
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:12345@localhost/auction'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')  # Use env variable
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class Team(db.Model):
     __tablename__ = 'teams'  # Ensure correct table name
@@ -59,7 +65,7 @@ class User(db.Model):
 
 
 with app.app_context():
-    db.create_all()  # This ensures the tables are created
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
