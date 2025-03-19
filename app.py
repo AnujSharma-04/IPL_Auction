@@ -62,6 +62,57 @@ class User(db.Model):
     username = db.Column(db.String(50), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)  # Hashed password should be stored
     role = db.Column(db.Enum('Admin', 'Manager', 'Audience'), nullable=False)
+    
+class Batsman(db.Model):
+    __tablename__ = 'batsmen'
+
+    player_id = db.Column(db.Integer, db.ForeignKey('players.player_id'), primary_key=True)
+    total_runs = db.Column(db.Integer, nullable=False, default=0)
+    batting_avg = db.Column(db.Float, nullable=False, default=0.0)
+    strike_rate = db.Column(db.Float, nullable=False, default=0.0)
+    centuries = db.Column(db.Integer, nullable=False, default=0)
+    half_centuries = db.Column(db.Integer, nullable=False, default=0)
+    highest_score = db.Column(db.Integer, nullable=False, default=0)
+
+    player = db.relationship('Player', backref=db.backref('batsman', uselist=False, cascade="all, delete-orphan"))
+
+class Bowler(db.Model):
+    __tablename__ = 'bowlers'
+
+    player_id = db.Column(db.Integer, db.ForeignKey('players.player_id'), primary_key=True)
+    total_wickets = db.Column(db.Integer, nullable=False, default=0)
+    bowling_avg = db.Column(db.Float, nullable=False, default=0.0)
+    economy = db.Column(db.Float, nullable=False, default=0.0)
+    best_figures = db.Column(db.String(10), nullable=False, default="0/0")  # Example: "5/30"
+    five_wicket_hauls = db.Column(db.Integer, nullable=False, default=0)
+
+    player = db.relationship('Player', backref=db.backref('bowler', uselist=False, cascade="all, delete-orphan"))
+
+class Allrounder(db.Model):
+    __tablename__ = 'allrounders'
+
+    player_id = db.Column(db.Integer, db.ForeignKey('players.player_id'), primary_key=True)
+    total_runs = db.Column(db.Integer, nullable=False, default=0)
+    batting_avg = db.Column(db.Float, nullable=False, default=0.0)
+    strike_rate = db.Column(db.Float, nullable=False, default=0.0)
+    total_wickets = db.Column(db.Integer, nullable=False, default=0)
+    bowling_avg = db.Column(db.Float, nullable=False, default=0.0)
+    best_figures = db.Column(db.String(10), nullable=False, default="0/0")
+
+    player = db.relationship('Player', backref=db.backref('allrounder', uselist=False, cascade="all, delete-orphan"))
+
+
+class WicketKeeper(db.Model):
+    __tablename__ = 'wicketkeepers'
+
+    player_id = db.Column(db.Integer, db.ForeignKey('players.player_id'), primary_key=True)
+    total_dismissals = db.Column(db.Integer, nullable=False, default=0)
+    catches = db.Column(db.Integer, nullable=False, default=0)
+    stumpings = db.Column(db.Integer, nullable=False, default=0)
+
+    player = db.relationship('Player', backref=db.backref('wicketkeeper', uselist=False, cascade="all, delete-orphan"))
+
+
 
 
 with app.app_context():
